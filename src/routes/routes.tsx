@@ -1,17 +1,38 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import Home from "../pages/Home";
-import Public from "./Public";
 import AllFiles from "../pages/AllFiles";
 import Starred from "../pages/Starred";
 import Settings from "../pages/Settings";
 import HelpCenter from "../pages/HelpCenter";
+import Private from "./Private";
+import AuthLayout from "../layouts/AuthLayout";
+import SignUp from "../components/SignUp";
+import Login from "../components/Login";
+import Public from "./Public";
 
 const routes = createBrowserRouter([
   {
     element: (
-      <MainLayout>
+      <AuthLayout>
         <Public />
+      </AuthLayout>
+    ),
+    children: [
+      {
+        path: "/signup",
+        element: <SignUp />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+    ],
+  },
+  {
+    element: (
+      <MainLayout>
+        <Private />
       </MainLayout>
     ),
     children: [
