@@ -1,25 +1,9 @@
-import { useEffect } from "react";
+import { RouterProvider } from "react-router-dom";
 import "./App.css";
-import useFusionStore from "./store";
+import routes from "./routes/routes";
 
 function App() {
-  const { theme, toggelTheme } = useFusionStore();
-
-  useEffect(() => {
-    document.body.setAttribute("data-theme", theme);
-    return () => {
-      document.body.removeAttribute("data-theme");
-    };
-  }, [theme]);
-  return (
-    <>
-      <button
-        onClick={() => toggelTheme(theme == "cupcake" ? "forest" : "cupcake")}
-      >
-        change Theme
-      </button>
-    </>
-  );
+  return <RouterProvider router={routes} />;
 }
 
 export default App;
