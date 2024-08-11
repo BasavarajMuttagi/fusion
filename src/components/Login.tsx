@@ -2,8 +2,8 @@ import { useForm } from "react-hook-form";
 import { UserLoginSchema, UserLoginType } from "../zod/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleNotch } from "@phosphor-icons/react";
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import apiClient from "../axios/apiClient";
 import { isAxiosError } from "axios";
 import toast from "react-hot-toast";
@@ -11,9 +11,10 @@ import useFusionStore from "../store";
 import google from "../assets/google.png";
 const Login = () => {
   const navigate = useNavigate();
-  const { setEmail, setToken, setDisplayName } = useFusionStore();
+  const { setToken, setDisplayName, setEmail } = useFusionStore();
   const [isSpin, setIsSpin] = useState(false);
-
+  const [isSpinGoogle, setIsSpinGoogle] = useState(false);
+  const loc = useLocation();
   const {
     register,
     reset,
@@ -42,6 +43,26 @@ const Login = () => {
       }
     } finally {
       setIsSpin(false);
+    }
+  };
+
+  useEffect(() => {
+    const state = loc.state;
+    if (state && state.error) {
+      toast.error(state.error);
+    }
+  }, [loc]);
+
+  const googleLogin = async () => {
+    try {
+      setIsSpinGoogle(true);
+      const response = await apiClient.get("/auth/google");
+      window.open(response.data.authUrl, "_self");
+    } catch (error) {
+      toast.error("Something went wrong");
+      console.log(error);
+    } finally {
+      setIsSpinGoogle(false);
     }
   };
   return (
@@ -92,7 +113,11 @@ const Login = () => {
       </form>
       <div className="text-center text-gray-500 text-xs">OR</div>
       <div>
-        <button className="p-2 w-full text-white bg-neutral-900 rounded-md space-x-2 flex items-center justify-center border border-white/15">
+        <button
+          disabled={isSpinGoogle}
+          onClick={() => googleLogin()}
+          className="p-2 w-full text-white bg-neutral-900 rounded-md space-x-2 flex items-center justify-center border border-white/15"
+        >
           <span className="font-medium">Login with</span>
           <img src={google} alt="google icon" className="aspect-square w-7" />
         </button>

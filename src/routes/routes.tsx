@@ -10,6 +10,8 @@ import AuthLayout from "../layouts/AuthLayout";
 import SignUp from "../components/SignUp";
 import Login from "../components/Login";
 import Public from "./Public";
+import HandleRedirect from "../components/HandleRedirect";
+import Profile from "../pages/Profile";
 
 const routes = createBrowserRouter([
   {
@@ -26,6 +28,10 @@ const routes = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
+      },
+      {
+        path: "/redirect",
+        element: <HandleRedirect />,
       },
     ],
   },
@@ -56,7 +62,21 @@ const routes = createBrowserRouter([
         path: "/help",
         element: <HelpCenter />,
       },
+      {
+        path: "/profile",
+        element: <Profile />,
+      },
     ],
+  },
+  {
+    path: "*",
+    element: (
+      <AuthLayout>
+        <div className="text-white font-bold text-3xl">
+          404 - page not found
+        </div>
+      </AuthLayout>
+    ),
   },
 ]);
 

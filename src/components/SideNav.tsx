@@ -14,7 +14,10 @@ const SideNav = () => {
   const { logout } = useFusionStore();
   return (
     <div className="w-64 flex flex-col justify-between h-full p-2 space-y-10 font-medium">
-      <ProfileCard />
+      <span className="text-3xl tracking-wider font-extrabold text-center bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-yellow-400">
+        Fusion
+      </span>
+
       <ul className="flex flex-col justify-start space-y-5 flex-1 py-5 ">
         <li className="group">
           <NavLink to={"/"}>
@@ -57,7 +60,7 @@ const SideNav = () => {
           </NavLink>
         </li>
       </ul>
-
+      <ProfileCard />
       <button
         onClick={logout}
         className="flex items-center justify-center space-x-2 text-red-400 px-3 py-2 rounded-md border border-red-200 bg-red-50 hover:bg-red-300 hover:text-white"
