@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import UploadVideo from "../components/UploadVideo";
 import { CloudinaryAsset } from "../types";
-import AssetCard from "../components/AssetCard";
+import AssetImageCard from "../components/AssetImageCard";
 import { getAssets } from "../axios/apiService";
 
 const kpiData = [
@@ -110,7 +110,7 @@ const Home = () => {
             </h2>
             <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {recentImages?.map((eachImage) => {
-                return <AssetCard {...eachImage} />;
+                return <AssetImageCard {...eachImage} />;
               })}
             </div>
           </div>
@@ -123,7 +123,7 @@ const Home = () => {
             </h2>
             <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {recentVideos?.map((eachVideo) => {
-                return <AssetCard {...eachVideo} />;
+                return <AssetImageCard {...eachVideo} />;
               })}
             </div>
           </div>

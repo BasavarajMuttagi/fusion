@@ -8,7 +8,7 @@ import {
 import Tabs from "../components/Tabs";
 import { CloudinaryAsset } from "../types";
 import { getStarredAssets } from "../axios/apiService";
-import AssetCard from "../components/AssetCard";
+import AssetImageCard from "../components/AssetImageCard";
 
 export const ActiveTabContextStarred = createContext<
   [activeTabType, Dispatch<SetStateAction<activeTabType>>]
@@ -50,7 +50,7 @@ const Starred = () => {
               </h2>
               <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {recentImages?.map((eachImage) => {
-                  return <AssetCard {...eachImage} />;
+                  return <AssetImageCard {...eachImage} />;
                 })}
               </div>
             </div>
@@ -65,7 +65,7 @@ const Starred = () => {
               </h2>
               <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {recentVideos?.map((eachVideo) => {
-                  return <AssetCard {...eachVideo} />;
+                  return <AssetImageCard {...eachVideo} />;
                 })}
               </div>
             </div>
