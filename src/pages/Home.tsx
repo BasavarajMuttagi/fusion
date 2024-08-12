@@ -140,6 +140,7 @@ const Home = () => {
                   width,
                   format,
                   displayName,
+                  resourceType,
                 }) => {
                   return (
                     <div
@@ -152,7 +153,7 @@ const Home = () => {
                           {displayName}
                         </div>
                         <div className="space-y-2 text-gray-600 text-[8px] font-medium md:text-[9px] xl:text-[10px]">
-                          <div>Format : {`${height}/${format}`}</div>
+                          <div>Format : {`${resourceType}/${format}`}</div>
                           <div>Dimensions: {`${height} X ${width}`}</div>
                           <div>
                             Created At :{" "}
