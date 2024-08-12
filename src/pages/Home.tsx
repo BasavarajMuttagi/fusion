@@ -6,10 +6,10 @@ import { createPortal } from "react-dom";
 import UploadVideo from "../components/UploadVideo";
 import { isAxiosError } from "axios";
 import toast from "react-hot-toast";
-import { CloudinaryResource, CloudinaryResponse } from "../types";
 import apiClient from "../axios/apiClient";
 import moment from "moment";
 import ContentAwareVideo from "../components/ContentAwareVideo";
+import { CloudinaryAsset } from "../types";
 const kpiData = [
   {
     name: "Total Revenue",
@@ -63,14 +63,12 @@ const kpiData = [
 const Home = () => {
   const { displayName } = useFusionStore();
   const [show, setShow] = useState(false);
-  const [recentImages, setRecentImages] = useState<CloudinaryResource[]>();
-  const [recentVideos, setRecentVideos] = useState<CloudinaryResource[]>();
+  const [recentImages, setRecentImages] = useState<CloudinaryAsset[]>();
+  const [recentVideos, setRecentVideos] = useState<CloudinaryAsset[]>();
   const [isUploadSuccess, setIsUploadSuccess] = useState(false);
   const getRecentObjects = async (resource_type: string) => {
     try {
-      const res = await apiClient.get(
-        `/cloudinary/get-uploads/${resource_type}`,
-      );
+      const res = await apiClient.get(`/cloudinary/getassets/${resource_type}`);
       return res;
     } catch (error) {
       if (isAxiosError(error)) {
@@ -79,15 +77,25 @@ const Home = () => {
     }
   };
 
+  const deleteById = async (assetId: string) => {
+    try {
+      const res = await apiClient.get(`/cloudinary/delete/${assetId}`);
+      return res;
+    } catch (error) {
+      if (isAxiosError(error)) {
+        toast.error(error.message);
+      }
+    }
+  };
   useEffect(() => {
     getRecentObjects("image").then((res) => {
-      const data = res?.data as CloudinaryResponse;
-      setRecentImages(data.resources);
+      const data = res?.data as CloudinaryAsset[];
+      setRecentImages(data);
     });
 
     getRecentObjects("video").then((res) => {
-      const data = res?.data as CloudinaryResponse;
-      setRecentVideos(data.resources);
+      const data = res?.data as CloudinaryAsset[];
+      setRecentVideos(data);
     });
   }, [isUploadSuccess]);
   return (
@@ -96,8 +104,8 @@ const Home = () => {
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold space-x-1">
             <span>Welcome Home,</span>
-            <span className="text-2xl text-transparent bg-clip-text bg-gradient-to-r from-[#f5af19] to-[#f12711]">
-              {displayName}
+            <span className="capitalize text-2xl text-transparent bg-clip-text bg-gradient-to-r from-[#f5af19] to-[#f12711]">
+              {displayName?.toLowerCase()}
             </span>
           </h1>
           <button
@@ -125,32 +133,40 @@ const Home = () => {
             <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {recentImages?.map(
                 ({
-                  secure_url,
-                  display_name,
-                  format,
-                  resource_type,
-                  created_at,
+                  assetId,
+                  secureUrl,
+                  createdAt,
                   height,
                   width,
+                  format,
+                  displayName,
                 }) => {
                   return (
                     <div
                       className="border p-2 rounded-md space-y-1 shadow"
-                      key={secure_url}
+                      key={secureUrl}
                     >
-                      <img src={secure_url} className="w-full aspect-square" />
+                      <img src={secureUrl} className="w-full aspect-square" />
                       <div className="space-y-2">
                         <div className="text-sm font-semibold lg:text-base">
-                          {display_name}
+                          {displayName}
                         </div>
                         <div className="space-y-2 text-gray-600 text-[8px] font-medium md:text-[9px] xl:text-[10px]">
-                          <div>Format : {`${resource_type}/${format}`}</div>
+                          <div>Format : {`${height}/${format}`}</div>
                           <div>Dimensions: {`${height} X ${width}`}</div>
                           <div>
                             Created At :{" "}
-                            {moment(created_at).format(
+                            {moment(createdAt).format(
                               "MMMM Do YYYY, h:mm:ss a",
                             )}
+                          </div>
+                          <div>
+                            <button
+                              type="button"
+                              onClick={() => deleteById(assetId)}
+                            >
+                              Delete
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -170,37 +186,44 @@ const Home = () => {
             <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {recentVideos?.map(
                 ({
-                  secure_url,
-                  display_name,
-                  format,
-                  resource_type,
-                  created_at,
+                  secureUrl,
+                  createdAt,
                   height,
                   width,
-                  public_id,
+                  format,
+                  publicId,
+                  resourceType,
+                  assetId,
+                  displayName,
                 }) => {
                   return (
                     <div
                       className="border p-2 rounded-md space-y-1 shadow"
-                      key={secure_url}
+                      key={secureUrl}
                     >
                       <ContentAwareVideo
                         cloudName={import.meta.env.VITE_CLOUDINARY_NAME}
-                        publicId={public_id}
+                        publicId={publicId}
                       />
                       <div className="space-y-2">
                         <div className="text-sm font-semibold lg:text-base">
-                          {display_name}
+                          {displayName}
                         </div>
                         <div className="space-y-2 text-gray-600 text-[8px] font-medium md:text-[9px] xl:text-[10px]">
-                          <div>Format : {`${resource_type}/${format}`}</div>
+                          <div>Format : {`${resourceType}/${format}`}</div>
                           <div>Dimensions: {`${height} X ${width}`}</div>
                           <div>
                             Created At :{" "}
-                            {moment(created_at).format(
+                            {moment(createdAt).format(
                               "MMMM Do YYYY, h:mm:ss a",
                             )}
                           </div>
+                          <button
+                            type="button"
+                            onClick={() => deleteById(assetId)}
+                          >
+                            Delete
+                          </button>
                         </div>
                       </div>
                     </div>
