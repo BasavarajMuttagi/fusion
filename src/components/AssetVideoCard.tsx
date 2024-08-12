@@ -1,12 +1,13 @@
 import { DotsThreeOutlineVertical } from "@phosphor-icons/react";
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CloudinaryAsset } from "../types";
 import { deleteById } from "../axios/apiService";
 import StarButton from "./StarButton";
 import moment from "moment";
+import ContentAwareVideo from "./ContentAwareVideo";
 
-function AssetImageCard({
-  secureUrl,
+function AssetVideoCard({
+  publicId,
   createdAt,
   height,
   width,
@@ -17,7 +18,6 @@ function AssetImageCard({
 }: CloudinaryAsset) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
   };
@@ -41,12 +41,9 @@ function AssetImageCard({
   return (
     <div className="w-[360px] max-h-[400px] border rounded-md shadow">
       <div className="relative w-full">
-        <img
-          src={secureUrl}
-          alt={displayName}
-          height={640}
-          width={360}
-          className="aspect-video object-cover rounded-t-md w-full"
+        <ContentAwareVideo
+          cloudName={import.meta.env.VITE_CLOUDINARY_NAME}
+          publicId={publicId}
         />
         <div className="absolute top-4 right-4 bg-white/80 px-2 py-1 rounded-md space-x-1 uppercase text-xs font-medium">
           <span>{`${height} X ${width}`}</span>
@@ -62,7 +59,7 @@ function AssetImageCard({
         </div>
         <div className="flex items-center gap-4 relative">
           <StarButton assetId={assetId} starred={starred} />
-          <button onClick={() => toggleDropdown()}>
+          <button onClick={toggleDropdown}>
             <DotsThreeOutlineVertical
               size={32}
               weight="fill"
@@ -97,4 +94,4 @@ function AssetImageCard({
   );
 }
 
-export default AssetImageCard;
+export default AssetVideoCard;

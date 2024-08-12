@@ -53,9 +53,15 @@ const ContentAwareVideo: React.FC<ContentAwareVideoProps> = ({
         onMouseEnter={() => onHover(true)}
         onMouseLeave={() => onHover(false)}
         onClick={handleClick}
-        className="cursor-pointer"
+        className="cursor-pointer rounded-md"
       >
-        <video ref={videoPreviewRef} src={previewVideoUrl} loop playsInline>
+        <video
+          ref={videoPreviewRef}
+          src={previewVideoUrl}
+          loop
+          playsInline
+          className="rounded-md"
+        >
           Your browser does not support the video tag.
         </video>
       </div>

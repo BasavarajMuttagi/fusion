@@ -7,6 +7,7 @@ import UploadVideo from "../components/UploadVideo";
 import { CloudinaryAsset } from "../types";
 import AssetImageCard from "../components/AssetImageCard";
 import { getAssets } from "../axios/apiService";
+import AssetVideoCard from "../components/AssetVideoCard";
 
 const kpiData = [
   {
@@ -110,7 +111,9 @@ const Home = () => {
             </h2>
             <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {recentImages?.map((eachImage) => {
-                return <AssetImageCard {...eachImage} />;
+                return (
+                  <AssetImageCard {...eachImage} key={eachImage.assetId} />
+                );
               })}
             </div>
           </div>
@@ -123,7 +126,9 @@ const Home = () => {
             </h2>
             <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {recentVideos?.map((eachVideo) => {
-                return <AssetImageCard {...eachVideo} />;
+                return (
+                  <AssetVideoCard {...eachVideo} key={eachVideo.assetId} />
+                );
               })}
             </div>
           </div>

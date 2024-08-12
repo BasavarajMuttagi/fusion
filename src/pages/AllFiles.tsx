@@ -9,6 +9,7 @@ import Tabs from "../components/Tabs";
 import { CloudinaryAsset } from "../types";
 import AssetImageCard from "../components/AssetImageCard";
 import { getAssets } from "../axios/apiService";
+import AssetVideoCard from "../components/AssetVideoCard";
 
 export const ActiveTabContextAllFiles = createContext<
   [activeTabType, Dispatch<SetStateAction<activeTabType>>]
@@ -50,7 +51,9 @@ const AllFiles = () => {
               </h2>
               <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {recentImages?.map((eachImage) => {
-                  return <AssetImageCard {...eachImage} />;
+                  return (
+                    <AssetImageCard {...eachImage} key={eachImage.assetId} />
+                  );
                 })}
               </div>
             </div>
@@ -65,7 +68,9 @@ const AllFiles = () => {
               </h2>
               <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {recentVideos?.map((eachVideo) => {
-                  return <AssetImageCard {...eachVideo} />;
+                  return (
+                    <AssetVideoCard {...eachVideo} key={eachVideo.assetId} />
+                  );
                 })}
               </div>
             </div>
