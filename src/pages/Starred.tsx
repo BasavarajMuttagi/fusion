@@ -13,6 +13,7 @@ import ContentAwareVideo from "../components/ContentAwareVideo";
 import moment from "moment";
 import { CloudinaryAsset } from "../types";
 import StarButton from "../components/StarButton";
+import { getStarredAssets } from "../axios/apiService";
 
 export const ActiveTabContextStarred = createContext<
   [activeTabType, Dispatch<SetStateAction<activeTabType>>]
@@ -23,19 +24,6 @@ const Starred = () => {
   const [activeTab, setActiveTab] = useState<activeTabType>("IMAGE");
   const [recentImages, setRecentImages] = useState<CloudinaryAsset[]>();
   const [recentVideos, setRecentVideos] = useState<CloudinaryAsset[]>();
-
-  const getRecentObjects = async (resource_type: string) => {
-    try {
-      const res = await apiClient.get(
-        `/cloudinary/getassets/${resource_type}?starred=true`,
-      );
-      return res;
-    } catch (error) {
-      if (isAxiosError(error)) {
-        toast.error(error.message);
-      }
-    }
-  };
 
   const deleteById = async (assetId: string) => {
     try {
@@ -49,14 +37,14 @@ const Starred = () => {
   };
 
   useEffect(() => {
-    getRecentObjects("image").then((res) => {
+    getStarredAssets("image").then((res) => {
       const data = res?.data as CloudinaryAsset[];
       setRecentImages(data);
     });
   }, []);
 
   useEffect(() => {
-    getRecentObjects("video").then((res) => {
+    getStarredAssets("video").then((res) => {
       const data = res?.data as CloudinaryAsset[];
       setRecentVideos(data);
     });

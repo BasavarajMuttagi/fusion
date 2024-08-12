@@ -24,7 +24,7 @@ const StarButton = ({
       {starred ? (
         <Star size={24} weight="fill" className="text-yellow-500" />
       ) : (
-        <Star size={24} />
+        <Star size={24} className="text-gray-500" />
       )}
     </div>
   );
