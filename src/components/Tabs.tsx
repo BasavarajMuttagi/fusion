@@ -1,9 +1,15 @@
-import { useContext } from "react";
+import { Context, useContext } from "react";
 import { twMerge } from "tailwind-merge";
-import { ActiveTabContext } from "../pages/AllFiles";
+import { activeTabType } from "../pages/AllFiles";
 
-const Tabs = () => {
-  const [activeTab, setActiveTab] = useContext(ActiveTabContext);
+const Tabs = ({
+  context,
+}: {
+  context: Context<
+    [activeTabType, React.Dispatch<React.SetStateAction<activeTabType>>]
+  >;
+}) => {
+  const [activeTab, setActiveTab] = useContext(context);
   return (
     <div className="flex items-center rounded-full shadow text-lg tracking-wide font-bold text-gray-600 cursor-pointer">
       <div

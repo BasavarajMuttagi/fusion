@@ -12,10 +12,12 @@ import Tabs from "../components/Tabs";
 import ContentAwareVideo from "../components/ContentAwareVideo";
 import moment from "moment";
 import { CloudinaryAsset } from "../types";
-export const ActiveTabContext = createContext<
+import StarButton from "../components/StarButton";
+
+export const ActiveTabContextAllFiles = createContext<
   [activeTabType, Dispatch<SetStateAction<activeTabType>>]
 >(["IMAGE", () => {}]);
-type activeTabType = "IMAGE" | "VIDEO";
+export type activeTabType = "IMAGE" | "VIDEO";
 
 const AllFiles = () => {
   const [activeTab, setActiveTab] = useState<activeTabType>("IMAGE");
@@ -59,10 +61,10 @@ const AllFiles = () => {
   }, []);
 
   return (
-    <ActiveTabContext.Provider value={[activeTab, setActiveTab]}>
+    <ActiveTabContextAllFiles.Provider value={[activeTab, setActiveTab]}>
       <div className="h-full w-full space-y-14">
         <div className="flex justify-center">
-          <Tabs />
+          <Tabs context={ActiveTabContextAllFiles} />
         </div>
         <div className="space-y-5 pb-10">
           {activeTab === "IMAGE" && (
@@ -83,6 +85,7 @@ const AllFiles = () => {
                     resourceType,
                     assetId,
                     displayName,
+                    starred,
                   }) => {
                     return (
                       <div
@@ -109,6 +112,7 @@ const AllFiles = () => {
                             >
                               Delete
                             </button>
+                            <StarButton assetId={assetId} starred={starred} />
                           </div>
                         </div>
                       </div>
@@ -137,6 +141,8 @@ const AllFiles = () => {
                     format,
                     resourceType,
                     displayName,
+                    assetId,
+                    starred,
                   }) => {
                     return (
                       <div
@@ -160,6 +166,13 @@ const AllFiles = () => {
                                 "MMMM Do YYYY, h:mm:ss a",
                               )}
                             </div>
+                            <button
+                              type="button"
+                              onClick={() => deleteById(assetId)}
+                            >
+                              Delete
+                            </button>
+                            <StarButton assetId={assetId} starred={starred} />
                           </div>
                         </div>
                       </div>
@@ -171,7 +184,7 @@ const AllFiles = () => {
           )}
         </div>
       </div>
-    </ActiveTabContext.Provider>
+    </ActiveTabContextAllFiles.Provider>
   );
 };
 

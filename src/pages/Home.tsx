@@ -10,6 +10,7 @@ import apiClient from "../axios/apiClient";
 import moment from "moment";
 import ContentAwareVideo from "../components/ContentAwareVideo";
 import { CloudinaryAsset } from "../types";
+import StarButton from "../components/StarButton";
 const kpiData = [
   {
     name: "Total Revenue",
@@ -141,6 +142,7 @@ const Home = () => {
                   format,
                   displayName,
                   resourceType,
+                  starred,
                 }) => {
                   return (
                     <div
@@ -168,6 +170,7 @@ const Home = () => {
                             >
                               Delete
                             </button>
+                            <StarButton assetId={assetId} starred={starred} />
                           </div>
                         </div>
                       </div>
@@ -196,6 +199,7 @@ const Home = () => {
                   resourceType,
                   assetId,
                   displayName,
+                  starred,
                 }) => {
                   return (
                     <div
@@ -225,6 +229,7 @@ const Home = () => {
                           >
                             Delete
                           </button>
+                          <StarButton assetId={assetId} starred={starred} />
                         </div>
                       </div>
                     </div>

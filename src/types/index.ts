@@ -18,4 +18,5 @@ export type CloudinaryAsset = {
   tags: string[];
   userId: string;
   displayName: string;
+  starred: boolean;
 };
