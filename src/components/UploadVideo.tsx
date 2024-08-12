@@ -7,13 +7,21 @@ import axios from "axios";
 
 const UploadVideo = ({
   closeDialog,
+  setIsUploadSuccess,
 }: {
   closeDialog: Dispatch<SetStateAction<boolean>>;
+  setIsUploadSuccess: Dispatch<SetStateAction<boolean>>;
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>();
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+
+  const handleUploadSuccess = () => {
+    closeDialog(false);
+    setIsUploadSuccess(true);
+  };
+
   const Clear = () => {
     setSelectedFile(null);
     if (fileInputRef && fileInputRef.current) {
@@ -24,11 +32,19 @@ const UploadVideo = ({
   const handleUpload = async () => {
     try {
       setIsUploading(true);
-      const result = await apiClient.get("/cloudinary/signature");
-      const { signature, timestamp } = result.data as {
-        signature: string;
-        timestamp: number;
-      };
+      const result = await apiClient.post("/cloudinary/signature", {
+        fileName: selectedFile?.name,
+      });
+      const { signature, timestamp, upload_preset, folder, public_id } =
+        result.data as {
+          signature: string;
+          timestamp: number;
+          userId: string;
+          upload_preset: string;
+          public_id: string;
+          folder: string;
+        };
+
       await axios.post(
         `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_NAME}/auto/upload`,
         {
@@ -36,7 +52,11 @@ const UploadVideo = ({
           api_key: import.meta.env.VITE_CLOUDINARY_API_KEY,
           signature,
           timestamp,
+          upload_preset,
+          folder,
+          public_id,
         },
+
         {
           headers: { "Content-Type": "multipart/form-data" },
           onUploadProgress: (progressEvent) => {
@@ -46,7 +66,8 @@ const UploadVideo = ({
           },
         },
       );
-      closeDialog(false);
+
+      handleUploadSuccess();
     } catch (error) {
       toast.error("Something Went Wrong");
       console.log(error);

@@ -65,7 +65,7 @@ const Home = () => {
   const [show, setShow] = useState(false);
   const [recentImages, setRecentImages] = useState<CloudinaryResource[]>();
   const [recentVideos, setRecentVideos] = useState<CloudinaryResource[]>();
-
+  const [isUploadSuccess, setIsUploadSuccess] = useState(false);
   const getRecentObjects = async (resource_type: string) => {
     try {
       const res = await apiClient.get(
@@ -89,7 +89,7 @@ const Home = () => {
       const data = res?.data as CloudinaryResponse;
       setRecentVideos(data.resources);
     });
-  }, []);
+  }, [isUploadSuccess]);
   return (
     <>
       <div className="h-full w-full space-y-10">
@@ -214,7 +214,10 @@ const Home = () => {
       {show &&
         createPortal(
           <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 p-3">
-            <UploadVideo closeDialog={setShow} />
+            <UploadVideo
+              closeDialog={setShow}
+              setIsUploadSuccess={setIsUploadSuccess}
+            />
           </div>,
           document.body,
         )}
