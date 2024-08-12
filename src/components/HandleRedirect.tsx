@@ -46,7 +46,7 @@ const HandleRedirect = () => {
   }, [searchParams, setToken, setDisplayName, navigate, setEmail]);
 
   return (
-    <div className="h-screen w-full text-neutral-600 flex items-center justify-center text-lg font-medium">
+    <div className="h-screen w-full text-neutral-400 flex items-center justify-center text-xl font-medium">
       <div>Processing authentication...</div>
     </div>
   );

@@ -16,7 +16,8 @@ const UploadVideo = ({
   const [selectedFile, setSelectedFile] = useState<File | null>();
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
-
+  const [abortController, setAbortController] =
+    useState<AbortController | null>(null);
   const handleUploadSuccess = () => {
     closeDialog(false);
     setIsUploadSuccess(true);
@@ -27,9 +28,15 @@ const UploadVideo = ({
     if (fileInputRef && fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+    setUploadProgress(0);
+    setIsUploading(false);
+    setAbortController(null);
   };
 
   const handleUpload = async () => {
+    if (!selectedFile) return;
+    const controller = new AbortController();
+    setAbortController(controller);
     try {
       setIsUploading(true);
       const result = await apiClient.post("/cloudinary/signature", {
@@ -69,18 +76,48 @@ const UploadVideo = ({
 
       handleUploadSuccess();
     } catch (error) {
-      toast.error("Something Went Wrong");
-      console.log(error);
+      if (axios.isCancel(error)) {
+        toast.success("Upload canceled");
+      } else {
+        toast.error("Something Went Wrong");
+        console.log(error);
+      }
     } finally {
       setIsUploading(false);
+      setAbortController(null);
     }
   };
+
+  const handleCancelUpload = () => {
+    if (abortController) {
+      abortController.abort();
+      setUploadProgress(0);
+      setIsUploading(false);
+      toast.success("Upload canceled");
+    }
+  };
+
+  const handleCloseDialog = () => {
+    if (isUploading) {
+      if (
+        window.confirm(
+          "An upload is in progress. Are you sure you want to cancel?",
+        )
+      ) {
+        handleCancelUpload();
+        closeDialog(false);
+      }
+    } else {
+      closeDialog(false);
+    }
+  };
+
   return (
     <div className="max-w-lg w-full bg-neutral-800 h-96 rounded-md flex flex-col justify-between p-4 border-2 border-neutral-700/30">
       <div className="flex justify-end">
         <div
           className="p-1 rounded-full bg-zinc-100 cursor-pointer"
-          onClick={() => closeDialog((prev) => !prev)}
+          onClick={() => handleCloseDialog()}
         >
           <X size={16} className="text-black" />
         </div>
@@ -160,6 +197,16 @@ const UploadVideo = ({
           )}
         >
           Upload
+        </button>
+        <button
+          disabled={!isUploading}
+          onClick={handleCancelUpload}
+          className={twMerge(
+            "px-3 py-1 rounded-md bg-red-500 text-white",
+            !isUploading ? "brightness-50" : "",
+          )}
+        >
+          Cancel
         </button>
       </div>
     </div>
